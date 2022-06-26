@@ -117,14 +117,20 @@ resource "aws_launch_configuration" "web" {
 }
 
 
-
-
-
-
-
-
-module "vpc" {
-  source = "./modules/vpc"
- 
-  infra_env = var.infra_env
+resource "aws_cloudwatch_metric_alarm" "cwm-alarm" {
+  alarm_name                = "terraform-test-cwm-alarm"
+  comparison_operator       = "GreaterThanOrEqualToThreshold"
+  evaluation_periods        = "2"
+  metric_name               = "CPUUtilization"
+  namespace                 = "AWS/EC2"
+  period                    = "120"
+  statistic                 = "Average"
+  threshold                 = "80"
+  alarm_description         = "This metric monitors ec2 cpu utilization"
+  insufficient_data_actions = []
 }
+
+
+
+
+
