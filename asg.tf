@@ -25,8 +25,9 @@ resource "aws_autoscaling_group" "web" {
   metrics_granularity = "1Minute"
 
   vpc_zone_identifier  = [
-    aws_subnet.public_eu_north_1a.id,
-    aws_subnet.public_eu_north_1b.id
+    aws_subnet.eu_north_1a.id,
+    aws_subnet.eu_north_1b.id,
+    aws_subnet.eu_north_1c.id
   ]
 
   # Required to redeploy without an outage.
