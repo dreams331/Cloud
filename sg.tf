@@ -53,6 +53,7 @@ resource "aws_security_group" "elb_http" {
   }
 }
 
+# I created security group for my rds database
 
 resource "aws_security_group" "db-sg" {
   name        = "main_rds_sg"
