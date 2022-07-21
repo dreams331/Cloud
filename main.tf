@@ -17,9 +17,9 @@ resource "aws_vpc" "my_vpc" {
   }
 }
 
-# I CREATED 2 PUBLIC SUBNET & 2 PRIVATE SUBNET
+# I CREATED 3 SUBNETS
 
-resource "aws_subnet" "public_eu_north_1a" {
+resource "aws_subnet" "eu_north_1a" {
   vpc_id     = aws_vpc.my_vpc.id
   cidr_block = "10.0.0.0/24"
   availability_zone = "eu-north-1a"
@@ -29,9 +29,19 @@ resource "aws_subnet" "public_eu_north_1a" {
   }
 }
 
-resource "aws_subnet" "public_eu_north_1b" {
+resource "aws_subnet" "eu_north_1b" {
   vpc_id     = aws_vpc.my_vpc.id
   cidr_block = "10.0.1.0/24"
+  availability_zone = "eu-north-1b"
+
+  tags = {
+    Name = "createdby-akeem"
+  }
+}
+
+resource "aws_subnet" "eu_north_1c" {
+  vpc_id     = aws_vpc.my_vpc.id
+  cidr_block = "10.0.4.0/24"
   availability_zone = "eu-north-1b"
 
   tags = {
@@ -67,12 +77,17 @@ resource "aws_route_table" "my_vpc_public" {
 # I CREATE A ROUTE TABLE ASSOCIATION
 
 resource "aws_route_table_association" "my_vpc_us_east_1a_public" {
-    subnet_id = aws_subnet.public_eu_north_1a.id
+    subnet_id = aws_subnet.eu_north_1a.id
     route_table_id = aws_route_table.my_vpc_public.id
 }
 
 resource "aws_route_table_association" "my_vpc_us_east_1b_public" {
-    subnet_id = aws_subnet.public_eu_north_1b.id
+    subnet_id = aws_subnet.eu_north_1b.id
+    route_table_id = aws_route_table.my_vpc_public.id
+}
+
+resource "aws_route_table_association" "my_vpc_us_east_1b_public" {
+    subnet_id = aws_subnet.eu_north_1c.id
     route_table_id = aws_route_table.my_vpc_public.id
 }
 
@@ -82,7 +97,7 @@ resource "aws_instance" "nginx" {
     ami = "ami-0e3f1570eb0a9bc7f"
     instance_type = "t2.micro"
     availability_zone = "eu-north-1a"
-    subnet_id = aws_subnet.public_eu_north_1a.id
+    subnet_id = aws_subnet.eu_north_1a.id
        user_data = <<-EOF
                 #!/bin/bash
                 sudo amazon-linux-extras install -y nginx1.12
